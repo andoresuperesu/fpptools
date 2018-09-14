@@ -1,0 +1,1 @@
+Crear queries que usen conexión a bases de datos usando la opción CONN_STR_FP_PRO=1 del ini.

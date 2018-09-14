@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "fpptools"
+version = "0.1.0"
+description = ""
+authors = ["andresperezcera <andresperezcera@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Topic :: Utilities",
+    "Environment :: Console",
+    "Topic :: Desktop Environment",
+    "Environment :: Win32 (MS Windows)",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+click = "^6.7"
+configparser = "^3.5"
+lxml = "^4.2"
+colorama = "^0.3.9"
+pyodbc = "^4.0"
+pymysql = "^0.9.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+
+[tool.poetry.scripts]
+fpptools = "fpptools.fpptools:cli"
+
+
