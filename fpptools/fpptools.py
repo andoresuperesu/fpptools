@@ -14,9 +14,9 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--tofile', default=False, type=bool, help='Output to file')
+@click.option('--tofile', default=True, type=bool, help='Output to file')
 @click.option('--verbose', default=False, type=bool, help='Output to console')
-@click.option('--searchtype', type=click.Choice(['str','blk','job','jobs']), help='Either str, blk, job or jobs')
+@click.option('--searchtype', default='str', type=click.Choice(['str','blk','job','jobs']), help='Either str, blk, job or jobs')
 def list_fittings(searchtype, tofile, verbose):
     '''
     Create list of fittings in str/blk/job(s)
@@ -51,16 +51,16 @@ def list_fittings(searchtype, tofile, verbose):
                     if file.upper().endswith(".BLK"):
                         var_fullpath=os.path.join(root, file)
                         var_output.extend(find_fittings(var_fullpath))
-    #Write file?
+    # Write file?
     if tofile:
-        dirname = os.path.dirname(__file__)
+        dirname = os.getcwd()
         filename = os.path.join(dirname, 'fittinglist_'+searchtype+'.txt')
         f = open(filename, 'wb')
         f.seek(0)
         f.truncate()
         f.write(bytes(input_output01(var_output), 'utf-8'))
         f.close()
-    #Output to console?
+    # Output to console?
     if verbose:
         click.echo(click.style(input_output01(var_output), fg='blue'))
 
@@ -106,6 +106,7 @@ def find_fittings(xmlfile):
     filename=os.path.basename(xmlfile)
     parser = etree.XMLParser(strip_cdata=False)
     tree = etree.parse(xmlfile, parser)
+    kitfound=False
     for fit in tree.xpath("//FP_FITTING"):
         if not fit.getparent().tag=="FP_KIT":
             output.append([xmlfile,fit.attrib['Code'],'['+fit.getparent().tag+':'+fit.getparent().attrib['Code']+']'])
@@ -114,15 +115,22 @@ def find_fittings(xmlfile):
         kitname = kit.attrib['Code']
         #output.append([xmlfile,kit.attrib['Code']])
         if dbtype=='1':
+            kitfound=False
             for item in dbkits:
                 if item['nomekit']==kitname:
                     output.append([xmlfile,item['codice'],"[FP_KIT:"+kitname+"]"])
+                    kitfound=True
                     #click.echo(kitname)
+            if kitfound==False:
+                output.append([xmlfile,'ERROR',"[FP_KIT_MISSING:"+kitname+"]"])
         elif dbtype=='0':
+            kitfound=False
             for row in dbkits:
                 if row[0]==kitname:
                     output.append([xmlfile,row[1],"[FP_KIT:"+kitname+"]"])
-
+                    kitfound=True
+            if kitfound==False:
+                output.append([xmlfile,'ERROR',"[FP_KIT_MISSING:"+kitname+"]"])
     return output
 
 def find_fittings_job(xmlfile):
@@ -194,17 +202,14 @@ def get_db_kits():
     return result
 
 #----------------------
-# From all over the web
+# Global Variables
 #----------------------
 
-
+fppinifile = os.path.expanduser("~")+'\\AppData\\Roaming\\Emmegisoft\\FP_PRO\\FP_PRO.INI'
+fppaccdbpath=fppinikey('SYSTEM','MDB_PATH')
+dbtype = fppinikey('SYSTEM','CONN_STR_FP_PRO')
+dbkits = get_db_kits()
 
 
 if __name__=="__main__":
-    fppinifile = os.path.expanduser("~")+'\\AppData\\Roaming\\Emmegisoft\\FP_PRO\\FP_PRO.INI'
-    fppaccdbpath=fppinikey('SYSTEM','MDB_PATH')
-    dbtype = fppinikey('SYSTEM','CONN_STR_FP_PRO')
-    dbkits = get_db_kits()
     cli()
-
-

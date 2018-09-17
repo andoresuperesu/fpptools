@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "fpptools"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "An FPPro debug CLI written in python3"
 authors = ["andresperezcera <andresperezcera@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/andresperezcera/fpptools"
 classifiers = [
     "Topic :: Utilities",
     "Environment :: Console",
