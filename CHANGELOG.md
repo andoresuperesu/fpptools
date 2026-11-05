@@ -1,6 +1,17 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.1 (unreleased)
+
+### Added
+- Documentation in `docs/` (one page per command, common options, exes, development). The README is now a short overview that links to it (absolute GitHub links, so they work on PyPI too); `docs/` is in the sdist.
+
+### Changed
+- `wipe kits --help` explains `--source`.
+- `scripts\build_exe.ps1` builds the exes into `dist_exe\`, leaving `dist\` for the PyPI wheel/sdist.
+- Project URL: github.com/andoresuperesu/fpptools.
+- Author email: me@aperezc.xyz.
+
+## 0.2.0 (2026-11-05)
 
 Rewrite for current Python and FP Pro 11.
 

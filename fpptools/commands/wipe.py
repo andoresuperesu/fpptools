@@ -113,7 +113,8 @@ def panedefs_cmd(app: App, root, under, match, apply, backup_dir, report):
 
 
 @wipe_group.command("kits")
-@click.option("--source", type=click.Choice(["str", "blk"]), default="str", show_default=True)
+@click.option("--source", type=click.Choice(["str", "blk"]), default="str", show_default=True,
+              help="Structures (STR_PATH) or blocks (BLK_PATH).")
 @scope_options
 @apply_options
 @pass_app

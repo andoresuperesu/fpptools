@@ -5,7 +5,7 @@ description = "Administration and debugging CLI for emmegisoft FP Pro (structure
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Andres Perez", email = "andresperezcera@gmail.com" }]
+authors = [{ name = "Andres Perez", email = "me@aperezc.xyz" }]
 requires-python = ">=3.10"
 classifiers = [
     "Topic :: Utilities",
@@ -43,7 +43,7 @@ build-backend = "hatchling.build"
 path = "fpptools/__init__.py"
 
 [tool.hatch.build.targets.sdist]
-include = ["fpptools", "tests", "scripts", "README.md", "LICENSE", "CHANGELOG.md"]
+include = ["fpptools", "tests", "scripts", "docs", "README.md", "LICENSE", "CHANGELOG.md"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["fpptools"]

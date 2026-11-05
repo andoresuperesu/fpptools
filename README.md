@@ -3,7 +3,7 @@
 Administration and debugging command line for emmegisoft **FP Pro**: structures (`.STR`), blocks (`.BLK`) and job records.
 It works on the configuration that is **active in FP Pro right now** (read from `%APPDATA%\Emmegisoft\FP_PRO\FP_PRO.INI`).
 
-*Guía rápida en español más abajo.*
+📖 **Full documentation:** [docs/](https://github.com/andoresuperesu/fpptools/blob/master/docs/README.md) · *Guía rápida en español más abajo.*
 
 ## Install
 
@@ -12,97 +12,41 @@ pip install fpptools          # or: uv tool install fpptools
 fpptools --help
 ```
 
-Standalone exes (no Python needed) are built with `scripts\build_exe.ps1`:
-
-- `fpptools.exe`: the full command line.
-- `fpptools_estructuras.exe`: **double-click** to export the structures of the active configuration to `estructuras.xlsx` next to the exe (same as `fpptools str list --lang es -o estructuras.xlsx`). If that file is open in Excel, it writes `estructuras_<date_time>.xlsx` instead. Also installed as the `fpptools-estructuras` command.
+No Python on the PC? Use the standalone exes: `fpptools.exe` (full command line) and `fpptools_estructuras.exe` (double-click: structures to `estructuras.xlsx`). See [Standalone exes](https://github.com/andoresuperesu/fpptools/blob/master/docs/exe.md).
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `fpptools config` | Show the active configuration: folders, database (password hidden) |
-| `fpptools str list` | List structures: folder, name, unique code, description |
-| `fpptools fit list` | List fittings used in structures, blocks, one job or all jobs (kits expanded from the database) |
-| `fpptools wipe panedefs` | Remove glass fittings, glass DXF and pane table from every pane of the structures |
-| `fpptools wipe kits` | Remove every kit from structures or blocks |
+| Command | What it does | Docs |
+|---|---|---|
+| `fpptools config` | Show the active configuration: INI, folders, database (password hidden). Run it first when something isn't found | [config](https://github.com/andoresuperesu/fpptools/blob/master/docs/config.md) |
+| `fpptools str list` | Structures: folder, name, unique code (*nombre unívoco*), description → `structures.csv` | [str list](https://github.com/andoresuperesu/fpptools/blob/master/docs/str-list.md) |
+| `fpptools fit list` | Fittings used in structures, blocks, one job or all jobs (`--source str\|blk\|job\|jobs`), kits expanded from the database → `fittings_<source>.csv` | [fit list](https://github.com/andoresuperesu/fpptools/blob/master/docs/fit-list.md) |
+| `fpptools wipe panedefs` | Remove glass fittings, glass DXF and pane table from every pane of the structures | [wipe](https://github.com/andoresuperesu/fpptools/blob/master/docs/wipe.md) |
+| `fpptools wipe kits` | Remove every kit from structures or blocks (`--source str\|blk`) | [wipe](https://github.com/andoresuperesu/fpptools/blob/master/docs/wipe.md) |
+| `fpptools-estructuras` | Same as `str list --lang es -o estructuras.xlsx` (what the double-click exe runs) | [exe](https://github.com/andoresuperesu/fpptools/blob/master/docs/exe.md) |
+| `fpptools list_fittings` | 0.1 syntax (`--searchtype`), deprecated: use `fit list` | [fit list](https://github.com/andoresuperesu/fpptools/blob/master/docs/fit-list.md#01-syntax-list_fittings) |
 
-Every command has `--help`.
+**Common options** ([details](https://github.com/andoresuperesu/fpptools/blob/master/docs/options.md)):
 
-### Choosing files
+- Choose files: `--under FOLDER`, `--match PATTERN`, `--root FOLDER`.
+- Output: `-o file.csv` / `file.xlsx` / `-` (console); CSV with `;` and UTF-8 BOM (opens right in Excel); `--lang es` for Spanish headers.
+- `--ini PATH` (or `FPPTOOLS_INI`): another FP_PRO.INI · `--version` · `-h` / `--help` on every command · `python -m fpptools` = `fpptools`.
 
-Commands that read STR/BLK folders accept:
-
-- `--under FOLDER`: only that folder of the tree, e.g. `--under 019_SERIE_22_PESADO`
-- `--match PATTERN`: file name pattern without extension, e.g. `--match "VTA_*"` (case-insensitive)
-- `--root FOLDER`: another folder instead of the one in FP_PRO.INI
-
-### Output
-
-`--out file.csv` (default), `--out file.xlsx`, or `--out -` for the console.
-CSV files use `;` and UTF-8 with BOM, so Excel opens them correctly with accents. `--lang es` writes Spanish headers.
-
-### Commands that modify files: simulate first
-
-`wipe` commands **only simulate** by default: they report what would change and write nothing.
-Add `--apply` to write. Before writing, every file is copied to `--backup-dir` (default `.\fpptools_backups\<date_time>\`, same sub-folders) together with a `report.txt`. To undo, copy the backed-up files back.
+**Commands that modify files only simulate** unless you add `--apply`; with `--apply` the originals are backed up first ([wipe](https://github.com/andoresuperesu/fpptools/blob/master/docs/wipe.md)).
 
 ```powershell
+fpptools config
+fpptools str list --lang es -o estructuras.xlsx
+fpptools fit list --source blk -o fittings_blk.xlsx
 fpptools wipe panedefs --under "LINEA X"            # simulation
 fpptools wipe panedefs --under "LINEA X" --apply    # backup + write
 ```
-
-Close the structures in FP Pro before applying.
-
-### Structure fields
-
-| Column | Where it comes from |
-|---|---|
-| Folder | Folder of the file inside STR_PATH (the tree in FP Pro's structure browser) |
-| Name | File name without `.STR` (the "Nombre" field in FP Pro) |
-| Unique code | `FP_TREE/@NameStr` ("nombre unívoco" in FP Pro) |
-| Description | `FP_TREE/FP_DESCRIPTION`, stored as Base64 inside the file |
-
-### Fittings (`fit list`)
-
-Lists every fitting used, one row per fitting:
-
-| `--source` | What it scans | Folder (FP_PRO.INI) | Columns |
-|---|---|---|---|
-| `str` (default) | every structure `.STR` | `STR_PATH` | Folder, File, Fitting, Source, Note |
-| `blk` | every block `.BLK` | `BLK_PATH` | Folder, File, Fitting, Source, Note |
-| `job` | the job records of one job (`--job NAME`, asked if missing) | `JOB_PATH` | Job, Item, Fitting, Source |
-| `jobs` | the job records of every job | `JOB_PATH` | Job, Item, Fitting, Source |
-
-- **Source** is the element the fitting hangs from, as `<element>:<code>` (e.g. `FP_NODE:10`), or `FP_KIT:<kit>` for fittings that come from a kit.
-- Kits in STR/BLK files are expanded from the database (one row per fitting of the kit). **Note** says when a kit is not in the database, or `--no-db` was used (then the kit is listed but not expanded).
-- `--under` / `--match` work for `str` and `blk`. Job records are found as `<JOB>_JOBRECORD*.XML` (as in 0.1; not yet checked on FP Pro 11).
-- Default output `fittings_<source>.csv`; `-o file.xlsx` or `-o -` (console); `--lang es` for Spanish headers.
-
-```powershell
-fpptools fit list                                   # structures -> fittings_str.csv
-fpptools fit list --source blk -o fittings_blk.xlsx
-fpptools fit list --source job --job 27002_6 -o -
-fpptools fit list --under "LINEA X" --no-db
-```
-
-**0.1 syntax:** `fpptools list_fittings --searchtype str|blk|job|jobs [--tofile y|n] [--verbose y|n]` still works (hidden, deprecated): `--searchtype` is `--source`; `--tofile y` writes `fittinglist_<type>.csv`, `--verbose y` prints to the console.
-
-### Database
-
-`fit list` reads kits from the FP Pro database of the active configuration: MySQL (`CONN_STR_FP_PRO=1`, settings in `[MYSQL]`) or Access (`Fp_Pro32.MDB` in `MDB_PATH`). Queries are read-only.
-Access needs the Microsoft Access ODBC driver with the same bitness (32/64-bit) as Python. Use `--no-db` to skip the database.
-
-### Other options
-
-- `--ini PATH` (or environment variable `FPPTOOLS_INI`): use another FP_PRO.INI.
-- `fpptools list_fittings --searchtype …` (0.1 syntax) still works but is deprecated: see [Fittings](#fittings-fit-list).
 
 ---
 
 ## Guía rápida (español)
 
-`fpptools` trabaja sobre la configuración **activa en FP Pro**.
+`fpptools` trabaja sobre la configuración **activa en FP Pro**. `fpptools config` muestra cuál es (carpetas y base de datos).
 
 **Exportar nombre y descripción de las estructuras:**
 
@@ -115,18 +59,14 @@ Columnas: Carpeta, Nombre (nombre del archivo), Nombre único (nombre unívoco),
 
 **Sin línea de comandos:** doble clic en `fpptools_estructuras.exe`. Crea `estructuras.xlsx` en la misma carpeta del programa (si está abierto en Excel, crea `estructuras_<fecha_hora>.xlsx`). El programa debe estar en una carpeta donde se pueda escribir (no en `C:\Program Files`).
 
+**Accesorios:** `fpptools fit list --source str|blk|job|jobs --lang es -o accesorios.xlsx`.
+
 **Comandos que modifican archivos** (`wipe`): por defecto solo **simulan** y muestran qué cambiarían. Con `--apply` primero copian los originales a `fpptools_backups\<fecha_hora>\` y luego escriben. Cierre las estructuras en FP Pro antes de aplicar.
 
-`fpptools config` muestra qué configuración, carpetas y base de datos está usando.
+Documentación completa (en inglés): [docs/](https://github.com/andoresuperesu/fpptools/blob/master/docs/README.md).
 
 ## Development
 
-```powershell
-uv sync
-uv run pytest
-uv run fpptools --help
-uv build ; uv publish                     # PyPI
-.\scripts\build_exe.ps1                   # dist_exe\fpptools.exe, dist_exe\fpptools_estructuras.exe (not in dist\: that is PyPI's)
-```
+See [docs/development.md](https://github.com/andoresuperesu/fpptools/blob/master/docs/development.md) (uv, tests, exes, PyPI).
 
 License: MIT.
