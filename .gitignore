@@ -102,3 +102,18 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# fpptools runtime output
+fpptools_backups/
+*.fpptools.tmp
+
+# standalone exes (scripts/build_exe.ps1); dist/ holds only the PyPI wheel/sdist
+dist_exe/
+
+# outputs fpptools writes in the working folder, and archives
+*.7z
+estructuras*.xlsx
+structures.csv
+structures.xlsx
+fittings_*.csv
+fittinglist_*.csv
