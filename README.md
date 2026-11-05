@@ -63,6 +63,31 @@ Close the structures in FP Pro before applying.
 | Unique code | `FP_TREE/@NameStr` ("nombre unívoco" in FP Pro) |
 | Description | `FP_TREE/FP_DESCRIPTION`, stored as Base64 inside the file |
 
+### Fittings (`fit list`)
+
+Lists every fitting used, one row per fitting:
+
+| `--source` | What it scans | Folder (FP_PRO.INI) | Columns |
+|---|---|---|---|
+| `str` (default) | every structure `.STR` | `STR_PATH` | Folder, File, Fitting, Source, Note |
+| `blk` | every block `.BLK` | `BLK_PATH` | Folder, File, Fitting, Source, Note |
+| `job` | the job records of one job (`--job NAME`, asked if missing) | `JOB_PATH` | Job, Item, Fitting, Source |
+| `jobs` | the job records of every job | `JOB_PATH` | Job, Item, Fitting, Source |
+
+- **Source** is the element the fitting hangs from, as `<element>:<code>` (e.g. `FP_NODE:10`), or `FP_KIT:<kit>` for fittings that come from a kit.
+- Kits in STR/BLK files are expanded from the database (one row per fitting of the kit). **Note** says when a kit is not in the database, or `--no-db` was used (then the kit is listed but not expanded).
+- `--under` / `--match` work for `str` and `blk`. Job records are found as `<JOB>_JOBRECORD*.XML` (as in 0.1; not yet checked on FP Pro 11).
+- Default output `fittings_<source>.csv`; `-o file.xlsx` or `-o -` (console); `--lang es` for Spanish headers.
+
+```powershell
+fpptools fit list                                   # structures -> fittings_str.csv
+fpptools fit list --source blk -o fittings_blk.xlsx
+fpptools fit list --source job --job 27002_6 -o -
+fpptools fit list --under "LINEA X" --no-db
+```
+
+**0.1 syntax:** `fpptools list_fittings --searchtype str|blk|job|jobs [--tofile y|n] [--verbose y|n]` still works (hidden, deprecated): `--searchtype` is `--source`; `--tofile y` writes `fittinglist_<type>.csv`, `--verbose y` prints to the console.
+
 ### Database
 
 `fit list` reads kits from the FP Pro database of the active configuration: MySQL (`CONN_STR_FP_PRO=1`, settings in `[MYSQL]`) or Access (`Fp_Pro32.MDB` in `MDB_PATH`). Queries are read-only.
@@ -71,7 +96,7 @@ Access needs the Microsoft Access ODBC driver with the same bitness (32/64-bit) 
 ### Other options
 
 - `--ini PATH` (or environment variable `FPPTOOLS_INI`): use another FP_PRO.INI.
-- `fpptools list_fittings --searchtype str` (0.1 syntax) still works but is deprecated.
+- `fpptools list_fittings --searchtype …` (0.1 syntax) still works but is deprecated: see [Fittings](#fittings-fit-list).
 
 ---
 
