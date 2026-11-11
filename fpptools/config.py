@@ -82,6 +82,17 @@ class FppConfig:
         return self.path("JOB_PATH")
 
     @property
+    def nodes_path(self) -> Path | None:
+        """Multijoint (.NOD) folder of the configuration, if the INI has it."""
+        return self.path("NODES_PATH") if self.get("SYSTEM", "NODES_PATH") else None
+
+    @property
+    def prm_path(self) -> Path | None:
+        """Opening-symbol scripts (.PRM): <START_PATH>\\Prm (shared by all configurations)."""
+        start = self.get("SYSTEM", "START_PATH")
+        return Path(start.rstrip("\\/")) / "Prm" if start else None
+
+    @property
     def configs_path(self) -> Path | None:
         return self.path("CONFIGS_PATH") if self.get("SYSTEM", "CONFIGS_PATH") else None
 

@@ -21,9 +21,22 @@ PyInstaller (`build` dependency group), one file each, console. They go to `dist
 ## PyPI
 
 ```powershell
-uv build                                         # dist\fpptools-X.Y.Z.tar.gz + .whl
-uv publish --token pypi-XXXX dist\fpptools-X.Y.Z*
+uv build                                                      # dist\fpptools-X.Y.Z.tar.gz + .whl
+uv publish --keyring-provider subprocess dist\fpptools-X.Y.Z*
 ```
+
+**The PyPI token** is a token scoped to the `fpptools` project only, kept in the Windows Credential Manager through
+`keyring`, so it never appears in a command, a file or the shell history. One-time setup:
+
+```powershell
+uv tool install keyring
+keyring set https://upload.pypi.org/legacy/ __token__        # paste the token when asked (not echoed)
+```
+
+Never put the token in `pyproject.toml`, the repo, a `.env` or a script, or pass it with `--token` (PowerShell keeps
+typed commands in its history file). To replace it: revoke it on PyPI (Account settings → API tokens), create a new one
+for the project, run `keyring set …` again.
+
 
 - A published version can't be replaced: fix → bump the version.
 - The README is the PyPI page: links to these docs are absolute GitHub links.

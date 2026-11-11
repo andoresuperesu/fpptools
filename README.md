@@ -20,6 +20,7 @@ No Python on the PC? Use the standalone exes: `fpptools.exe` (full command line)
 |---|---|---|
 | `fpptools config` | Show the active configuration: INI, folders, database (password hidden). Run it first when something isn't found | [config](https://github.com/andoresuperesu/fpptools/blob/master/docs/config.md) |
 | `fpptools str list` | Structures: folder, name, unique code (*nombre unívoco*), description → `structures.csv` | [str list](https://github.com/andoresuperesu/fpptools/blob/master/docs/str-list.md) |
+| `fpptools str sheet` | One PDF page per structure: elevation, profiles, kits, joinery (needs `pip install fpptools[report]`) | [str sheet](https://github.com/andoresuperesu/fpptools/blob/master/docs/str-sheet.md) |
 | `fpptools fit list` | Fittings used in structures, blocks, one job or all jobs (`--source str\|blk\|job\|jobs`), kits expanded from the database → `fittings_<source>.csv` | [fit list](https://github.com/andoresuperesu/fpptools/blob/master/docs/fit-list.md) |
 | `fpptools wipe panedefs` | Remove glass fittings, glass DXF and pane table from every pane of the structures | [wipe](https://github.com/andoresuperesu/fpptools/blob/master/docs/wipe.md) |
 | `fpptools wipe kits` | Remove every kit from structures or blocks (`--source str\|blk`) | [wipe](https://github.com/andoresuperesu/fpptools/blob/master/docs/wipe.md) |

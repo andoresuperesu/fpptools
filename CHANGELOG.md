@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 (unreleased)
+
+### Added
+- `fpptools str sheet`: PDF with one page per structure: elevation (opening symbols, FP-style dimensions) and, beside it, profiles, kits, joinery (NOD multijoints, glazing fittings) and panes read from the STR/NOD files, plus the database sections: profile descriptions and compounds, kit contents (replacement fittings resolved, choices, size ranges), profile fixings, pane tables and machinings (read-only; `--no-db` skips them). Optional extra: `pip install fpptools[report]` (matplotlib). Titles use the bundled Barlow font (SIL OFL).
+
 ## 0.2.1 (unreleased)
 
 ### Added

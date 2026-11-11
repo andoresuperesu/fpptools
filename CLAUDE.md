@@ -3,7 +3,7 @@
 Andrés's FP Pro admin/debug CLI, published on PyPI as `fpptools`. Users: FP Pro technicians and knowledgeable clients. CLI first; a GUI may come later, so keep logic out of the click commands where practical.
 
 ## Rules
-- Only Andrés runs git. Edit files, then tell him what is ready to commit.
+- Git: Claude runs git only on Andrés's explicit go-ahead for that action ("commit", "push"...); each go-ahead covers that action only. Otherwise edit files and tell him what is ready to commit. Stage by path (never `git add -A`; `out/` is scratch), never push or rewrite history without being asked.
 - Agree changes with Andrés before modifying the repo.
 - PyPI package: keep the name `fpptools`, the `fpptools` console script and backwards-compatible commands (hidden aliases when renaming). Bump `fpptools/__init__.py` `__version__` and `CHANGELOG.md`.
 - Commands that modify FP files: simulate by default, `--apply` writes, always back up first (`safe_write.py`). Backups must never land inside the scanned folder.
