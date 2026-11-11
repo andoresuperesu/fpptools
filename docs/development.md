@@ -22,8 +22,10 @@ PyInstaller (`build` dependency group), one file each, console. They go to `dist
 
 ```powershell
 uv build                                                      # dist\fpptools-X.Y.Z.tar.gz + .whl
-uv publish --keyring-provider subprocess dist\fpptools-X.Y.Z*
+uv publish --keyring-provider subprocess --username __token__ dist\fpptools-X.Y.Z*
 ```
+
+uv may still show a `password` prompt: press Enter without typing anything, and it uses the token from the keyring.
 
 **The PyPI token** is a token scoped to the `fpptools` project only, kept in the Windows Credential Manager through
 `keyring`, so it never appears in a command, a file or the shell history. One-time setup:
